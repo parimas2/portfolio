@@ -87,6 +87,11 @@ section.alt{background:var(--sky)}
 .tl{color:var(--orange);font-weight:500;text-decoration:none;display:inline-flex;gap:8px;align-items:center}
 .tl svg{stroke:var(--orange);width:20px;height:20px}
 .tl:hover{text-decoration:underline}
+[hidden]{display:none!important}
+.pager{display:flex;justify-content:center;align-items:center;gap:24px;margin-top:40px;flex-wrap:wrap}
+.pager span{color:var(--muted);font-size:15px}
+.pager .btn svg{width:20px;height:20px}.pager .btn:not(.ghost) svg{stroke:#fff}
+.btn:disabled{opacity:.4;cursor:default;transform:none}
 .empty{color:var(--muted);padding:24px 0}
 /* about */
 .about{display:grid;grid-template-columns:1fr 1.2fr;gap:48px;align-items:start}
@@ -182,8 +187,9 @@ dialog::backdrop{background:rgba(6,59,130,.75)}
 </div></section>
 
 <section class="s" id="work"><div class="wrap">
-  <div class="sh"><div><h2>เอกสารผลงาน</h2><p>รายงาน งานวิจัย และเอกสารที่ฉันจัดทำ ดูตัวอย่างที่นี่หรือเปิดในแท็บใหม่</p></div></div>
+  <div class="sh"><div><h2>เอกสารผลงาน</h2><p>บันทึกข้อความ หนังสือภายใน-นอก และเอกสารที่จัดทำ ดูตัวอย่างที่นี่หรือเปิดในแท็บใหม่</p></div></div>
   <div class="cards" id="docs"></div><p class="empty" id="de" hidden>ไม่พบเอกสารที่ตรงกับคำค้นหา ลองใช้คำอื่น</p>
+    <div class="pager" id="pager" hidden><button class="btn sm ghost" id="pprev"><svg class="i" style="transform:scaleX(-1)"><use href="#arrow"/></svg>ก่อนหน้า</button><span id="pinfo"></span><button class="btn sm" id="pnext">ถัดไป<svg class="i"><use href="#arrow"/></svg></button></div>
 </div></section>
 
 <section class="s alt" id="about"><div class="wrap about">
@@ -203,7 +209,7 @@ const IMG = {"oh1": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkG
 /* ===== แก้ไขส่วนนี้: ใส่ข้อมูลของคุณ ===== */
 const SITE = {
   name: "ปริมาศ แสงฤทธิ์",
-  intro: "สวัสดีครับ/ค่ะ ฉันคือ ปริมาศ แสงฤทธิ์ ที่นี่รวมภาพจากกิจกรรมที่ได้เข้าร่วม และเอกสารที่จัดทำ ให้เปิดดูได้สะดวกในที่เดียว",
+  intro: "รวบรวมภาพจากกิจกรรมที่ได้เข้าร่วม และเอกสารที่จัดทำ<br>ของนางสาวปริมาศ แสงฤทธิ์ ตำแหน่งบรรณารักษ์",
   about: [
     "นางสาวปริมาศ แสงฤทธิ์",
         "ตำแหน่ง: บรรณารักษ์",
@@ -237,9 +243,20 @@ const ALBUMS = [
 /* เอกสาร: url เป็นลิงก์ไฟล์ PDF หรือหน้าเว็บ (หรือชื่อไฟล์ในโฟลเดอร์เดียวกัน) type คือป้ายสั้นๆ เช่น PDF, สไลด์ */
 const DOCS = [
   {title:"๐๐๒.บศ.๖๙/๗๒๓", type:"PDF", year:2026, desc:"ขอความอนุเคราะห์เข้าถอดแบบอาคารโรงงานผลิตเภสัชภัณฑ์ในพระดำริ เพื่อจัดทำโมเดลจำลองสำหรับการจัดแสดงภายใน หอจดหมายเหตุและพิพิธภัณฑ์ ราชวิทยาลัยจุฬาภรณ์", url:"https://chulabhornroyalacademy-my.sharepoint.com/personal/parimas_san_cra_ac_th/_layouts/15/guestaccess.aspx?share=IQAqIXeAAgPDSbFi6qhtMfF-AWUgEeu0qoi01LX9M-xy0c0&e=RMyhrd", icon:"journal"},
-  {title:"บทความวิจัย", type:"PDF", year:2025, desc:"บทความในหัวข้อที่ฉันสนใจ เขียนสำหรับรายวิชา", url:"https://example.com/paper.pdf", icon:"lab"},
-  {title:"สไลด์นำเสนอเวิร์กช็อป", type:"สไลด์", year:2025, desc:"สไลด์ที่ใช้นำเสนอในงานเวิร์กช็อปนักศึกษา", url:"https://example.com/slides", icon:"ebook"},
-  {title:"ประวัติการศึกษาและการทำงาน", type:"PDF", year:2026, desc:"การศึกษา ประสบการณ์ และทักษะของฉัน", url:"https://example.com/cv.pdf", icon:"file"}
+  {title:"๐๐๒.บศ.๖๙/๖๓๑", type:"PDF", year:2026, desc:"ขออนุมัติส่งบุคลากรเข้าร่วมงานมหกรรมงานวิจัยแห่งชาติ ๒๕๖๙ (Thailand Research Expo ๒๐๒๖)", url:"https://chulabhornroyalacademy-my.sharepoint.com/personal/parimas_san_cra_ac_th/_layouts/15/guestaccess.aspx?share=IQClHkljVRD_SqzZZNQ1MCrKAY8opYZ6oYsydoxR-4HzJOg&e=WDOIx6", icon:"lab"},
+  {title:"๐๐๒.บศ.๖๙/๔๗๐", type:"PDF", year:2026, desc:"ขออนุมัติเบิกเงินค่าธรรมเนียมการสมัครสมาชิกสมาคมห้องสมุดแห่งประเทศไทย ประเภทนิติบุคคล (สมาชิกตลอดชีพ)", url:"https://chulabhornroyalacademy-my.sharepoint.com/personal/parimas_san_cra_ac_th/_layouts/15/guestaccess.aspx?share=IQCRaqDrrXEqQ58GfsXTOmueAb54BiHP7eiDH6IeudZhvaA&e=QZ2tQF", icon:"book"},
+  {title:"๐๐๒.บศ.๖๙/๔๒๗", type:"PDF", year:2026, desc:"ขออนุมัติส่งบุคลากรเข้าร่วมงานประชุมสัมมนาความร่วมมือระหว่างห้องสมุดสถาบันอุดมศึกษา ครั้งที่ ๓๘", url:"https://chulabhornroyalacademy-my.sharepoint.com/personal/parimas_san_cra_ac_th/_layouts/15/guestaccess.aspx?share=IQD7hg3Hc5JES4T6ENU5YmiIAQ24h134tKxxvHms_selrjM&e=e6ppao", icon:"file"},
+    {title:"๐๐๒.บศ.๖๙/๔๐๑", type:"PDF", year:2026, desc:"ขออนุมัติดำเนินการสมัครสมาชิกสมาคมห้องสมุดแห่งประเทศไทย ประเภทนิติบุคคล (สมาชิกตลอดชีพ)", url:"https://chulabhornroyalacademy-my.sharepoint.com/personal/parimas_san_cra_ac_th/_layouts/15/guestaccess.aspx?share=IQDLuJGuzxBMT4b-1T65cowJAemfgDKTDnO3mUh2zMXuYYg&e=CXtItV", icon:"book"},
+    {title:"๐๐๒.บศ.๖๙/๓๔๙", type:"PDF", year:2026, desc:"ขออนุมัติโอนย้ายงานศูนย์จำลองสถานการณ์เพื่อการเรียนรู้ จากเดิมสังกัดสำนักบริหารการศึกษาและบริการวิชาการ เปลี่ยนไปสังกัดศูนย์แพทย์ภัยพิบัติและฉุกเฉินเจ้าฟ้าจุฬาภรณ์", url:"https://chulabhornroyalacademy-my.sharepoint.com/personal/parimas_san_cra_ac_th/_layouts/15/guestaccess.aspx?share=IQBrQ8zrcQVoRaNbmxv3QgVAAQbVN5pCuISvfLzWZM9YOAM&e=cPhAJe", icon:"journal"},
+    {title:"๐๐๒.บศ.๖๙/๒๒๗", type:"PDF", year:2026, desc:"ขออนุมัติเปลี่ยนแปลงรายละเอียดขอบเขตของงานพร้อมงดหรือลดค่าปรับจ้างเหมาจำลองวัตถุการจัดแสดงหอจดหมายเหตุและพิพิธภัณฑ์ ราชวิทยาลัยจุฬาภรณ์ ตามใบสั่งซื้อ/สั่งจ้าง เลขที่ ๔๑๑๖๙๐๑๓๖๘ ลงวันที่ ๒๘ ตุลาคม ๒๕๖๘", url:"https://chulabhornroyalacademy-my.sharepoint.com/personal/parimas_san_cra_ac_th/_layouts/15/guestaccess.aspx?share=IQDcr3riXnvHTIeE3EPUT1-wAbbxvmu-Q6zLoaBdcxuXbnM&e=GihWGo", icon:"journal"},
+    {title:"๐๐๒.บศ.๖๙/๒๑๓", type:"PDF", year:2026, desc:"โปรดพิจารณาลงนามหนังสือขอขอบคุณ จำนวน ๓ ฉบับ", url:"https://chulabhornroyalacademy-my.sharepoint.com/personal/parimas_san_cra_ac_th/_layouts/15/guestaccess.aspx?share=IQCH9hcxLyaVQ5nexPSDOc_GAQzKHzEjDMBbnAxZwMV8Bxk&e=z2bUnq", icon:"journal"},
+    {title:"๐๐๒.บศ.๖๙/๑๔๕", type:"PDF", year:2026, desc:"โปรดลงนามในหนังสือถึงคณบดีคณะจิตรกรรม ประติมากรรมและภาพพิมพ์ มหาวิทยาลัยศิลปากร จำนวน ๑ ฉบับ", url:"https://chulabhornroyalacademy-my.sharepoint.com/personal/parimas_san_cra_ac_th/_layouts/15/guestaccess.aspx?share=IQDWmmzVoPlCQ5Y-BWQ8Xz-HAbuZWSQkmDO8WGuxKjM41X0&e=VFGLoX", icon:"journal"},
+    {title:"๐๐๒.บศ.๖๙/๐๒๑", type:"PDF", year:2026, desc:"	โปรดลงนามในหนังสือถึงผู้อำนวยการสำนักหอสมุด มหาวิทยาลัยเกษตรศาสตร์ จำนวน ๑ ฉบับ", url:"https://chulabhornroyalacademy-my.sharepoint.com/personal/parimas_san_cra_ac_th/_layouts/15/guestaccess.aspx?share=IQDsdm5zD8UwR60VxV-cjp9fAQDRJsGev4chs5py0S3SB6g&e=WGqXNf", icon:"journal"},
+    {title:"๐๐๒.บศ.๖๙/๐๒๐", type:"PDF", year:2026, desc:"โปรดลงนามในหนังสือถึงผู้อำนวยการหอสมุดและคลังความรู้ มหาวิทยาลัยมหิดล จำนวน ๑ ฉบับ", url:"https://chulabhornroyalacademy-my.sharepoint.com/personal/parimas_san_cra_ac_th/_layouts/15/guestaccess.aspx?share=IQCL3KfzcEzMRKfnQGoBBAQTAQpXnAtMi1Uu2IMI7jQ1JEU&e=XvMgtE", icon:"journal"},
+    {title:"๐๐๒.บศ.๖๘/๑๔๓๗", type:"PDF", year:2026, desc:"ขออนุมัติรถยนต์ส่วนกลางเดินทางไปปฏิบัติงานนอกราชวิทยาลัยจุฬาภรณ์ ณ หอศิลป์ทิพย์พิมาน จังหวัดนครราชสีมา", url:"https://chulabhornroyalacademy-my.sharepoint.com/personal/parimas_san_cra_ac_th/_layouts/15/guestaccess.aspx?share=IQAha3LhIBtAQ5O3g4Gc0thqAY2jlxXfdHwSWvX1Dc_51WE&e=WPinif", icon:"journal"},
+    {title:"๐๐๒.บศ.๖๘/๑๑๙๖", type:"PDF", year:2026, desc:"ขออนุมัติเคลื่อนย้ายวัตถุจัดแสดงเพื่อเผยแพร่ในหอจดหมายเหตุและพิพิธภัณฑ์ ราชวิทยาลัยจุฬาภรณ์", url:"https://chulabhornroyalacademy-my.sharepoint.com/personal/parimas_san_cra_ac_th/_layouts/15/guestaccess.aspx?share=IQDaiuAdTNFKSYl5OUasSyx2AQEsx77ojRDs4hkhPoFOSfI&e=AsACE8", icon:"journal"},
+    {title:"๐๐๒.บศ.๖๘/๑๑๘๐", type:"PDF", year:2026, desc:"ขอความอนุเคราะห์สนับสนุนชุดผลงานเกี่ยวกับองค์ประธานราชวิทยาลัยจุฬาภรณ์", url:"https://chulabhornroyalacademy-my.sharepoint.com/personal/parimas_san_cra_ac_th/_layouts/15/guestaccess.aspx?share=IQBErQs0PFgaQ4wl7l0zWfmRAU9Otz_b4VFWB4jf9Xmitc8&e=qGlsbR", icon:"journal"},
+  {title:"ประวัติการศึกษาและการทำงาน", type:"PDF", year:2026, desc:"การศึกษา ประสบการณ์ และทักษะของฉัน", url:"https://example.com/cv.pdf", icon:"journal"}
 ];
 /* ===== จบส่วนแก้ไข ===== */
 
@@ -254,7 +271,7 @@ function ph(p,i){
 ALBUMS.forEach(a => a.images.forEach((im,i) => im.img = im.src || ph({h:300},i)));
 document.title = "พอร์ตโฟลิโอ | " + SITE.name;
 document.querySelector(".nm").textContent = SITE.name;
-$("#intro").textContent = SITE.intro;
+$("#intro").innerHTML = esc(SITE.intro).replace(/&lt;br\s*\/?&gt;/gi, "<br>");
 $("#about-text").innerHTML = SITE.about.map(t => `<p>${esc(t)}</p>`).join("");
 $("#foot").textContent = SITE.footer;
 $("#n1").textContent = ALBUMS.reduce((n,a) => n + a.images.length, 0); $("#n2").textContent = DOCS.length;
@@ -271,14 +288,22 @@ function grid(){
   $("#grid").innerHTML = shown.map((a,i) => `<button class="al" data-s="${i}" aria-label="เปิดอัลบั้ม: ${esc(a.title)} (${a.images.length} ภาพ)"><span class="cv"><img src="${a.images[a.cover||0].img}" alt="ภาพปก ${esc(a.title)}" style="object-position:${esc(a.pos||"50% 50%")}" loading="lazy"><em class="cnt"><svg class="i"><use href="#img"/></svg>${a.images.length} ภาพ</em></span><span class="mt"><small>${esc(a.cat)}</small><b>${esc(a.title)}</b><i>${esc(a.date)}</i></span></button>`).join("");
   $("#pe").hidden = shown.length > 0;
 }
+const PER = 6; let dp = 0;
 function docs(){
   const d = DOCS.map((x,i)=>[x,i]).filter(([x]) => hit(x.title,x.desc,x.type));
-  $("#docs").innerHTML = d.map(([x,i]) => `<article class="card"><div class="top"><div class="ic"><svg class="i"><use href="#${esc(x.icon||"file")}"/></svg></div><span class="badge">${esc(x.type)} · ${esc(x.year)}</span></div><h3>${esc(x.title)}</h3><p>${esc(x.desc)}</p><div class="acts"><button class="btn sm" data-d="${i}">ดูตัวอย่าง</button><a class="tl" href="${esc(x.url)}" target="_blank" rel="noopener">เปิดเอกสาร<svg class="i"><use href="#arrow"/></svg></a></div></article>`).join("");
+  const pages = Math.max(1, Math.ceil(d.length / PER)); dp = Math.min(dp, pages - 1);
+  $("#docs").innerHTML = d.slice(dp*PER, dp*PER+PER).map(([x,i]) => `<article class="card"><div class="top"><div class="ic"><svg class="i"><use href="#${esc(x.icon||"file")}"/></svg></div><span class="badge">${esc(x.type)} · ${esc(x.year)}</span></div><h3>${esc(x.title)}</h3><p>${esc(x.desc)}</p><div class="acts"><button class="btn sm" data-d="${i}">ดูตัวอย่าง</button><a class="tl" href="${esc(x.url)}" target="_blank" rel="noopener">เปิดเอกสาร<svg class="i"><use href="#arrow"/></svg></a></div></article>`).join("");
   $("#de").hidden = d.length > 0;
+  $("#pager").hidden = pages <= 1;
+  $("#pinfo").textContent = "หน้า " + (dp+1) + " จาก " + pages + " (" + d.length + " เอกสาร)";
+  $("#pprev").disabled = dp === 0; $("#pnext").disabled = dp >= pages - 1;
 }
+const goDocs = () => { docs(); $("#work").scrollIntoView({behavior:"smooth"}); };
+$("#pprev").onclick = () => { dp--; goDocs(); };
+$("#pnext").onclick = () => { dp++; goDocs(); };
 chips(); grid(); docs();
 $("#chips").addEventListener("click", e => { const b = e.target.closest(".chip"); if(b){ cur = b.dataset.c; chips(); grid(); }});
-$("#q").addEventListener("input", e => { q = e.target.value.trim().toLowerCase(); grid(); docs(); });
+$("#q").addEventListener("input", e => { q = e.target.value.trim().toLowerCase(); dp = 0; grid(); docs(); });
 $("#sbtn").onclick = () => { $("#sbar").classList.toggle("on"); if($("#sbar").classList.contains("on")) $("#q").focus(); };
 $("#menu").onclick = () => { const o = $("#links").classList.toggle("on"); $("#menu").setAttribute("aria-expanded", o); };
 $("#links").addEventListener("click", e => { if(e.target.closest("a")) $("#links").classList.remove("on"); });
